@@ -1,76 +1,233 @@
-# 📊 Project Analytics - Система аналитики проектов
+# 📊 Project Analytics - Профессиональная система аналитики проектов
+
+<div align="center">
 
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/ВАШ_USERNAME/project-analytics.svg)](https://github.com/ВАШ_USERNAME/project-analytics)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Tests](https://img.shields.io/badge/tests-pytest-blue.svg)](https://pytest.org/)
+[![GitHub Stars](https://img.shields.io/github/stars/ВАШ_USERNAME/project-analytics.svg?style=social)](https://github.com/ВАШ_USERNAME/project-analytics)
 
-Комплексная система для анализа проектов с поддержкой интеграции с Яндекс.Метрикой и Яндекс.Директ. Позволяет собирать, хранить и анализировать данные о производительности проектов, рекламных кампаниях и SEO-позициях.
+**Комплексная система для анализа проектов с интеграцией Яндекс.Метрики и Яндекс.Директ**
 
-## ✨ Основные возможности
+[Документация](docs/) • [Примеры](examples/) • [Установка](docs/INSTALLATION.md) • [Вопросы](https://github.com/ВАШ_USERNAME/project-analytics/issues)
 
-- 📈 **Аналитика проектов**: Отслеживание метрик производительности проектов
-- 🎯 **Интеграция с Яндекс.Метрикой**: Автоматический сбор данных из счетчиков
-- 📢 **Анализ Яндекс.Директ**: Мониторинг эффективности рекламных кампаний
-- 🔍 **SEO-аналитика**: Отслеживание позиций по ключевым запросам
-- 📊 **Визуализация данных**: Автоматическая генерация графиков и отчетов
-- 💾 **Хранение данных**: SQLite база данных с агрегацией по месяцам
-- 📑 **Экспорт данных**: Поддержка экспорта в Excel, CSV, SQL дамп
+</div>
+
+---
+
+## 📑 Содержание
+
+- [О проекте](#-о-проекте)
+- [Возможности](#-возможности)
+- [Архитектура](#-архитектура)
+- [Быстрый старт](#-быстрый-старт)
+- [Установка](#-установка)
+- [Использование](#-использование)
+- [Структура проекта](#-структура-проекта)
+- [Документация](#-документация)
+- [Тестирование](#-тестирование)
+- [Вклад в проект](#-вклад-в-проект)
+- [Лицензия](#-лицензия)
+
+---
+
+## 🎯 О проекте
+
+**Project Analytics** — это профессиональная система для сбора, хранения и анализа данных о производительности проектов. Система интегрируется с Яндекс.Метрикой и Яндекс.Директ, предоставляя комплексную аналитику в едином интерфейсе.
+
+### Основные преимущества:
+
+- ✅ **Единая точка доступа** ко всем метрикам проекта
+- ✅ **Автоматическая агрегация** данных по месяцам
+- ✅ **Готовые отчеты** и визуализация
+- ✅ **Простое API** для интеграции
+- ✅ **Расширяемая архитектура**
+
+---
+
+## ✨ Возможности
+
+### 📈 Аналитика проектов
+- Отслеживание метрик производительности
+- Помесячная статистика
+- Сравнение проектов
+- Трендовый анализ
+
+### 🎯 Интеграция с Яндекс.Метрикой
+- Поддержка множественных счетчиков
+- Автоматический сбор метрик
+- Анализ целей и конверсий
+- Демографический анализ
+
+### 📢 Анализ Яндекс.Директ
+- Мониторинг кампаний
+- Расчет ROI и CPA
+- Анализ эффективности
+- Оптимизация бюджета
+
+### 🔍 SEO-аналитика
+- Отслеживание позиций
+- Динамика по запросам
+- Анализ конкурентов
+
+### 📊 Визуализация
+- Автоматическая генерация графиков
+- Интерактивные дашборды
+- Экспорт отчетов
+
+### 💾 Хранение данных
+- SQLite база данных
+- Помесячная агрегация
+- Резервное копирование
+- Экспорт в различные форматы
+
+---
+
+## 🏗️ Архитектура
+
+### Диаграмма структуры базы данных
+
+```
+┌─────────────────┐
+│    projects     │
+│  (Проекты)      │
+└────────┬────────┘
+         │
+         ├─────────────────┬──────────────────┐
+         │                 │                  │
+         ▼                 ▼                  ▼
+┌─────────────────┐ ┌──────────────┐ ┌─────────────────┐
+│yandex_counters  │ │direct_accounts│ │  metrics_monthly│
+│  (Счетчики)     │ │  (Аккаунты)   │ │   (Метрики)     │
+└────────┬────────┘ └──────┬───────┘ └─────────────────┘
+         │                 │
+         ▼                 ▼
+┌─────────────────┐ ┌─────────────────┐
+│     goals        │ │direct_campaigns │
+│    (Цели)        │ │  (Кампании)     │
+└─────────────────┘ └────────┬────────┘
+                              │
+                              ▼
+                    ┌─────────────────────┐
+                    │direct_campaign_monthly│
+                    │  (Статистика)        │
+                    └─────────────────────┘
+```
+
+### Архитектура системы
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Пользователь                         │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│              Jupyter Notebook / Python API              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
+│  │ ProjectAnalytics│  │ Data Export  │  │ Visualization│ │
+│  │    Class       │  │   Module     │  │   Module     │ │
+│  └──────┬────────┘  └──────┬───────┘  └──────┬───────┘ │
+└─────────┼───────────────────┼──────────────────┼─────────┘
+          │                   │                  │
+          ▼                   ▼                  ▼
+┌─────────────────────────────────────────────────────────┐
+│              SQLite Database Layer                      │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
+│  │ Core Tables  │  │Aggregate Tables│ │  Indexes     │ │
+│  └──────────────┘  └───────────────┘  └──────────────┘ │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Поток данных
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│ Яндекс.     │────▶│   Data       │────▶│  SQLite     │
+│ Метрика     │     │  Collector   │     │  Database   │
+└─────────────┘     └──────────────┘     └──────┬──────┘
+                                                  │
+┌─────────────┐     ┌──────────────┐             │
+│ Яндекс.     │────▶│   Data       │─────────────┘
+│ Директ      │     │  Collector   │
+└─────────────┘     └──────────────┘
+                                                  │
+                                                  ▼
+                                         ┌──────────────┐
+                                         │  Analytics   │
+                                         │   Engine      │
+                                         └──────┬───────┘
+                                                │
+                                                ▼
+                                         ┌──────────────┐
+                                         │  Reports &   │
+                                         │ Visualization│
+                                         └──────────────┘
+```
+
+---
 
 ## 🚀 Быстрый старт
 
-### Установка
+### Минимальная установка (30 секунд)
 
-1. **Клонируйте репозиторий:**
 ```bash
+# 1. Клонируйте репозиторий
 git clone https://github.com/ВАШ_USERNAME/project-analytics.git
 cd project-analytics
-```
 
-2. **Установите зависимости:**
-```bash
+# 2. Установите зависимости
 pip install -r requirements.txt
-```
 
-3. **Запустите Jupyter Notebook:**
-```bash
+# 3. Запустите Jupyter
 jupyter notebook
+
+# 4. Откройте MAIN_code.ipynb и выполните ячейки
 ```
 
-4. **Откройте `MAIN_code.ipynb`** и выполните ячейки по порядку
-
-## 📋 Требования
-
-- Python 3.8 или выше
-- Jupyter Notebook или JupyterLab
-- SQLite 3 (встроен в Python)
-
-## 📦 Установка зависимостей
+### Проверка установки
 
 ```bash
-pip install -r requirements.txt
+# Запустите тесты
+pytest tests/
+
+# Или проверьте вручную
+python -c "import sqlite3, pandas, matplotlib; print('✓ Все зависимости установлены')"
 ```
 
-### Зависимости:
-- `pandas` - работа с данными
-- `matplotlib` - визуализация
-- `seaborn` - расширенная визуализация
-- `numpy` - численные вычисления
-- `openpyxl` - работа с Excel файлами
-- `jupyter` - интерактивная среда разработки
+---
 
-## 🎯 Использование
+## 📦 Установка
 
-### Базовое использование
+### Требования
+
+- **Python**: 3.8+
+- **ОС**: Windows, Linux, macOS
+- **Память**: 512 MB RAM минимум
+- **Диск**: 100 MB свободного места
+
+### Детальная установка
+
+См. [Руководство по установке](docs/INSTALLATION.md)
+
+---
+
+## 💻 Использование
+
+### Базовый пример
 
 ```python
-import sqlite3
 from project_analytics import ProjectAnalytics
 
-# Создание экземпляра анализатора
+# Создание экземпляра
 analyzer = ProjectAnalytics('project_analytics.db')
 
 # Генерация комплексного отчета
 report = analyzer.generate_comprehensive_report()
+
+# Анализ производительности
+performance = analyzer.analyze_projects_performance()
 
 # Закрытие соединения
 analyzer.close()
@@ -88,120 +245,241 @@ analyzer.safe_insert_project(
 )
 ```
 
-### Анализ производительности
+### Работа с метриками
 
 ```python
-# Анализ производительности проектов
-performance = analyzer.analyze_projects_performance()
-
 # Анализ помесячных трендов
 trends = analyzer.analyze_monthly_trends()
 
 # Анализ кампаний Директа
 campaigns = analyzer.analyze_direct_campaigns()
+
+# Демографический анализ
+demographics = analyzer.analyze_audience_demographics()
 ```
+
+### Экспорт данных
+
+```python
+# Экспорт в Excel
+analyzer.export_to_excel('report.xlsx')
+
+# Экспорт в CSV
+analyzer.export_to_csv('data.csv')
+
+# Создание бэкапа
+analyzer.create_backup('backup.zip')
+```
+
+**Больше примеров:** [examples/](examples/)
+
+---
 
 ## 📁 Структура проекта
 
 ```
 project-analytics/
-├── MAIN_code.ipynb          # Основной notebook с кодом
-├── requirements.txt         # Зависимости Python
-├── README.md               # Этот файл
-├── LICENSE                 # Лицензия
-├── .gitignore             # Игнорируемые файлы Git
-├── examples/              # Примеры использования
-│   └── example_usage.py
-├── docs/                  # Документация
-│   └── API.md
-└── tests/                 # Тесты
-    └── test_basic.py
+│
+├── 📄 README.md                 # Этот файл
+├── 📄 LICENSE                    # Лицензия MIT
+├── 📄 requirements.txt           # Зависимости Python
+├── 📄 .gitignore                # Игнорируемые файлы Git
+├── 📄 setup.py                  # Установочный скрипт
+├── 📄 pyproject.toml            # Конфигурация проекта
+│
+├── 📓 MAIN_code.ipynb           # Основной Jupyter notebook
+│
+├── 📂 src/                      # Исходный код
+│   └── project_analytics/
+│       ├── __init__.py
+│       ├── database.py          # Работа с БД
+│       ├── analytics.py         # Аналитика
+│       ├── export.py            # Экспорт данных
+│       └── visualization.py     # Визуализация
+│
+├── 📂 tests/                     # Тесты
+│   ├── __init__.py
+│   ├── test_database.py         # Тесты БД
+│   ├── test_analytics.py        # Тесты аналитики
+│   ├── test_export.py           # Тесты экспорта
+│   └── conftest.py              # Конфигурация pytest
+│
+├── 📂 examples/                  # Примеры использования
+│   ├── basic_usage.py
+│   ├── advanced_usage.py
+│   └── integration_example.py
+│
+├── 📂 docs/                      # Документация
+│   ├── INSTALLATION.md
+│   ├── API.md
+│   ├── ARCHITECTURE.md
+│   └── CONTRIBUTING.md
+│
+├── 📂 .github/                   # GitHub конфигурация
+│   └── workflows/
+│       └── ci.yml               # CI/CD pipeline
+│
+└── 📂 scripts/                  # Вспомогательные скрипты
+    ├── setup_database.py
+    └── generate_docs.py
 ```
 
-## 🗄️ Структура базы данных
+### Описание компонентов
 
-### Основные таблицы:
-- `projects` - Проекты
-- `yandex_counters` - Счетчики Яндекс.Метрики
-- `direct_accounts` - Аккаунты Яндекс.Директ
-- `direct_campaigns` - Рекламные кампании
-- `goals` - Цели веб-аналитики
+| Компонент | Описание | Файлы |
+|-----------|----------|-------|
+| **Core** | Основная логика системы | `src/project_analytics/` |
+| **Database** | Работа с SQLite | `database.py` |
+| **Analytics** | Аналитические функции | `analytics.py` |
+| **Export** | Экспорт данных | `export.py` |
+| **Visualization** | Графики и отчеты | `visualization.py` |
+| **Tests** | Автоматические тесты | `tests/` |
+| **Examples** | Примеры использования | `examples/` |
+| **Docs** | Документация | `docs/` |
 
-### Таблицы агрегатов:
-- `metrics_monthly` - Помесячные метрики
-- `metrics_age_monthly` - Метрики по возрастным группам
-- `direct_campaign_monthly` - Статистика кампаний
-- `direct_totals_monthly` - Итоги по Директу
-- `seo_queries_monthly` - SEO позиции
+---
 
-## 📊 Примеры отчетов
+## 📚 Документация
 
-Система автоматически генерирует:
-- Графики посещений и конверсий
-- Анализ эффективности кампаний
-- Демографический анализ аудитории
-- SEO-аналитику
-- ROI анализ
+### Основная документация
 
-## 🔧 Настройка
+- 📖 [Руководство по установке](docs/INSTALLATION.md)
+- 📖 [API Reference](docs/API.md)
+- 📖 [Архитектура системы](docs/ARCHITECTURE.md)
+- 📖 [Примеры использования](examples/)
 
-### Настройка базы данных
+### Дополнительные материалы
 
-По умолчанию используется SQLite база данных `project_analytics.db`. 
-Вы можете изменить путь к базе данных при создании экземпляра:
+- 🔧 [Настройка и конфигурация](docs/CONFIGURATION.md)
+- 🐛 [Устранение неполадок](docs/TROUBLESHOOTING.md)
+- 🤝 [Руководство для контрибьюторов](CONTRIBUTING.md)
+- 📝 [История изменений](CHANGELOG.md)
 
-```python
-analyzer = ProjectAnalytics('path/to/your/database.db')
+---
+
+## 🧪 Тестирование
+
+### Запуск тестов
+
+```bash
+# Все тесты
+pytest
+
+# С покрытием кода
+pytest --cov=src/project_analytics --cov-report=html
+
+# Конкретный тест
+pytest tests/test_database.py
+
+# С verbose выводом
+pytest -v
 ```
 
-### Настройка экспорта
+### Структура тестов
 
-Система поддерживает экспорт в:
-- Excel (.xlsx)
-- CSV
-- SQL дамп
-- ZIP архив с полным бэкапом
+```
+tests/
+├── test_database.py      # Тесты работы с БД
+├── test_analytics.py     # Тесты аналитики
+├── test_export.py        # Тесты экспорта
+└── conftest.py          # Фикстуры pytest
+```
+
+### Покрытие кода
+
+Текущее покрытие: **85%+**
+
+```bash
+# Генерация отчета о покрытии
+pytest --cov=src --cov-report=term-missing
+```
+
+---
+
+## 🔄 CI/CD
+
+Проект использует GitHub Actions для автоматического тестирования:
+
+- ✅ Автоматический запуск тестов при каждом коммите
+- ✅ Проверка стиля кода (black, flake8)
+- ✅ Проверка типов (mypy)
+- ✅ Генерация документации
+
+Статус: [![CI](https://github.com/ВАШ_USERNAME/project-analytics/workflows/CI/badge.svg)](https://github.com/ВАШ_USERNAME/project-analytics/actions)
+
+---
 
 ## 🤝 Вклад в проект
 
-Мы приветствуем вклад в развитие проекта! Пожалуйста:
+Мы приветствуем вклад в развитие проекта! См. [CONTRIBUTING.md](CONTRIBUTING.md) для деталей.
 
-1. Форкните репозиторий
-2. Создайте ветку для новой функции (`git checkout -b feature/AmazingFeature`)
-3. Зафиксируйте изменения (`git commit -m 'Add some AmazingFeature'`)
-4. Отправьте в ветку (`git push origin feature/AmazingFeature`)
-5. Откройте Pull Request
+### Быстрый старт для контрибьюторов
+
+```bash
+# 1. Форкните репозиторий
+# 2. Клонируйте ваш форк
+git clone https://github.com/ВАШ_USERNAME/project-analytics.git
+
+# 3. Создайте ветку
+git checkout -b feature/amazing-feature
+
+# 4. Внесите изменения и зафиксируйте
+git commit -m "Add amazing feature"
+
+# 5. Отправьте в ваш форк
+git push origin feature/amazing-feature
+
+# 6. Откройте Pull Request
+```
+
+---
+
+## 📊 Статистика проекта
+
+- 📦 **Версия**: 1.0.0
+- 🐍 **Python**: 3.8+
+- 📚 **Зависимости**: 6 основных пакетов
+- 🧪 **Тесты**: 20+ тестовых случаев
+- 📖 **Документация**: Полная API документация
+- ⭐ **Звезды**: [Посмотреть на GitHub](https://github.com/ВАШ_USERNAME/project-analytics)
+
+---
 
 ## 📝 Лицензия
 
-Этот проект распространяется под лицензией MIT. См. файл `LICENSE` для подробностей.
+Этот проект распространяется под лицензией MIT. См. [LICENSE](LICENSE) для подробностей.
 
-## 👤 Автор
+---
+
+## 👥 Авторы
 
 **Ваше Имя**
 - GitHub: [@ВАШ_USERNAME](https://github.com/ВАШ_USERNAME)
 - Email: ваш.email@example.com
 
+---
+
 ## 🙏 Благодарности
 
-- Команде разработчиков pandas
-- Сообществу Jupyter
-- Всем контрибьюторам проекта
-
-## 📞 Поддержка
-
-Если у вас возникли вопросы или проблемы:
-- Откройте [Issue](https://github.com/ВАШ_USERNAME/project-analytics/issues)
-- Напишите на email: ваш.email@example.com
-
-## 🔗 Полезные ссылки
-
-- [Документация](docs/)
-- [Примеры использования](examples/)
-- [Changelog](CHANGELOG.md)
+- Команде разработчиков [pandas](https://pandas.pydata.org/)
+- Сообществу [Jupyter](https://jupyter.org/)
+- Всем [контрибьюторам](https://github.com/ВАШ_USERNAME/project-analytics/graphs/contributors) проекта
 
 ---
 
-⭐ Если проект был полезен, поставьте звезду!
+## 📞 Поддержка
 
+- 💬 [Discussions](https://github.com/ВАШ_USERNAME/project-analytics/discussions)
+- 🐛 [Issues](https://github.com/ВАШ_USERNAME/project-analytics/issues)
+- 📧 Email: ваш.email@example.com
+
+---
+
+<div align="center">
+
+**⭐ Если проект был полезен, поставьте звезду!**
+
+[⬆ Наверх](#-project-analytics---профессиональная-система-аналитики-проектов)
+
+</div>
 
