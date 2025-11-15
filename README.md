@@ -575,7 +575,7 @@ pytest --cov=src --cov-report=term-missing
 - ✅ Проверка типов (mypy)
 - ✅ Генерация документации
 
-Статус: [![CI](https://github.com/DmitryProffessor/project-analytics/workflows/CI/badge.svg)](https://github.com/DmitryProffessor/project-analytics/actions)
+Статус: [![CI](https://github.com/DmitryProffessor/project-analytics/workflows/CI/badge.svg)](https://github.com/DmitryProffessor/White_Cofffee-project_analytics-/actions)
 ## Конвейер автоматизации
 ```mermaid
 graph LR
@@ -620,7 +620,7 @@ graph LR
 ```bash
 # 1. Форкните репозиторий
 # 2. Клонируйте ваш форк
-git clone https://github.com/ВАШ_USERNAME/project-analytics.git
+git clone https://github.com/DmitryProffessor/White_Cofffee-project_analytics-.git
 
 # 3. Создайте ветку
 git checkout -b feature/amazing-feature
@@ -643,7 +643,7 @@ git push origin feature/amazing-feature
 - 📚 **Зависимости**: 6 основных пакетов
 - 🧪 **Тесты**: 20+ тестовых случаев
 - 📖 **Документация**: Полная API документация
-- ⭐ **Звезды**: [Посмотреть на GitHub](https://github.com/ВАШ_USERNAME/project-analytics)
+- ⭐ **Звезды**: [Посмотреть на GitHub](https://github.com/DmitryProffessor/White_Cofffee-project_analytics-)
 
 ---
 
@@ -656,8 +656,7 @@ git push origin feature/amazing-feature
 ## 👥 Авторы
 
 **Ваше Имя**
-- GitHub: [@ВАШ_USERNAME](https://github.com/ВАШ_USERNAME)
-- Email: ваш.email@example.com
+- GitHub: [@DmitryProffessor](https://github.com/DmitryProffessor)
 
 
 **⭐ Если проект был полезен, поставьте звезду!**
