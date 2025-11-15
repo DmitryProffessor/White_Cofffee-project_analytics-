@@ -66,3 +66,13 @@ htmlcov/
 *.xlsx
 *.csv
 !examples/*.csv
+
+# Конфигурационные файлы с секретами
+config.ini
+secrets.json
+.env
+
+# Результаты экспорта
+exports/
+backups/
+
