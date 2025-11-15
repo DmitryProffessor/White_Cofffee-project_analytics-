@@ -10,7 +10,7 @@
 
 **Комплексная система для анализа проектов с интеграцией Яндекс.Метрики и Яндекс.Директ**
 
-[Документация](docs/) • [Примеры](examples/) • [Установка](docs/INSTALLATION.md) • [Вопросы](https://github.com/ВАШ_USERNAME/project-analytics/issues)
+[Документация](docs/) • [Примеры](examples/) • [Установка](docs/INSTALLATION.md) • [Вопросы](https://github.com/DmitryProffessor/project-analytics/issues)
 
 </div>
 
@@ -88,82 +88,145 @@
 
 ### Диаграмма структуры базы данных
 
-```
-┌─────────────────┐
-│    projects     │
-│  (Проекты)      │
-└────────┬────────┘
-         │
-         ├─────────────────┬──────────────────┐
-         │                 │                  │
-         ▼                 ▼                  ▼
-┌─────────────────┐ ┌──────────────┐ ┌─────────────────┐
-│yandex_counters  │ │direct_accounts│ │  metrics_monthly│
-│  (Счетчики)     │ │  (Аккаунты)   │ │   (Метрики)     │
-└────────┬────────┘ └──────┬───────┘ └─────────────────┘
-         │                 │
-         ▼                 ▼
-┌─────────────────┐ ┌─────────────────┐
-│     goals        │ │direct_campaigns │
-│    (Цели)        │ │  (Кампании)     │
-└─────────────────┘ └────────┬────────┘
-                              │
-                              ▼
-                    ┌─────────────────────┐
-                    │direct_campaign_monthly│
-                    │  (Статистика)        │
-                    └─────────────────────┘
+```mermaid
+erDiagram
+    projects {
+        integer id PK "ID проекта"
+        string name "Название"
+        string slug "URL-идентификатор"
+        string timezone "Часовой пояс"
+        string currency "Валюта"
+        datetime created_at "Дата создания"
+    }
+    
+    yandex_counters {
+        integer id PK "ID счетчика"
+        integer project_id FK "ID проекта"
+        integer counter_id "ID Яндекс.Метрики"
+        string name "Название счетчика"
+        string token "Токен доступа"
+    }
+    
+    direct_accounts {
+        integer id PK "ID аккаунта"
+        integer project_id FK "ID проекта"
+        string account_id "ID Яндекс.Директ"
+        string name "Название аккаунта"
+        string token "Токен доступа"
+    }
+    
+    metrics_monthly {
+        integer id PK "ID записи"
+        integer project_id FK "ID проекта"
+        date month "Месяц"
+        integer visitors "Посетители"
+        integer sessions "Сессии"
+        float bounce_rate "Отказы"
+        float conversion_rate "Конверсия"
+    }
+    
+    goals {
+        integer id PK "ID цели"
+        integer counter_id FK "ID счетчика"
+        integer goal_id "ID цели"
+        string name "Название цели"
+    }
+    
+    direct_campaigns {
+        integer id PK "ID кампании"
+        integer account_id FK "ID аккаунта"
+        integer campaign_id "ID кампании"
+        string name "Название кампании"
+    }
+    
+    direct_campaign_monthly {
+        integer id PK "ID записи"
+        integer campaign_id FK "ID кампании"
+        date month "Месяц"
+        decimal spend "Расходы"
+        integer clicks "Клики"
+        integer impressions "Показы"
+        float ctr "CTR"
+    }
+
+    projects ||--o{ yandex_counters : "имеет"
+    projects ||--o{ direct_accounts : "имеет"
+    projects ||--o{ metrics_monthly : "содержит"
+    yandex_counters ||--o{ goals : "содержит"
+    direct_accounts ||--o{ direct_campaigns : "содержит"
+    direct_campaigns ||--o{ direct_campaign_monthly : "статистика"
 ```
 
 ### Архитектура системы
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Пользователь                         │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│              Jupyter Notebook / Python API              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
-│  │ ProjectAnalytics│  │ Data Export  │  │ Visualization│ │
-│  │    Class       │  │   Module     │  │   Module     │ │
-│  └──────┬────────┘  └──────┬───────┘  └──────┬───────┘ │
-└─────────┼───────────────────┼──────────────────┼─────────┘
-          │                   │                  │
-          ▼                   ▼                  ▼
-┌─────────────────────────────────────────────────────────┐
-│              SQLite Database Layer                      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
-│  │ Core Tables  │  │Aggregate Tables│ │  Indexes     │ │
-│  └──────────────┘  └───────────────┘  └──────────────┘ │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A[👤 Пользователь] --> B[📓 Jupyter Notebook / Python API]
+    
+    B --> C[🎯 ProjectAnalytics Class]
+    B --> D[📤 Data Export Module]
+    B --> E[📊 Visualization Module]
+    
+    C --> F[💾 SQLite Database Layer]
+    D --> F
+    E --> F
+    
+    subgraph F [Уровень базы данных]
+        F1[🗃️ Core Tables]
+        F2[📈 Aggregate Tables]
+        F3[🔍 Indexes]
+    end
+    
+    G[📊 Яндекс.Метрика] --> H[🔄 Data Collector]
+    I[📢 Яндекс.Директ] --> H
+    H --> F
+    
+    F --> J[⚙️ Analytics Engine]
+    J --> K[📋 Reports & Visualization]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+    style F fill:#f5f5f5
+    style G fill:#bbdefb
+    style I fill:#c8e6c9
+    style J fill:#fff9c4
+    style K fill:#d1c4e9
 ```
 
 ### Поток данных
 
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│ Яндекс.     │────▶│   Data       │────▶│  SQLite     │
-│ Метрика     │     │  Collector   │     │  Database   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                  │
-┌─────────────┐     ┌──────────────┐             │
-│ Яндекс.     │────▶│   Data       │─────────────┘
-│ Директ      │     │  Collector   │
-└─────────────┘     └──────────────┘
-                                                  │
-                                                  ▼
-                                         ┌──────────────┐
-                                         │  Analytics   │
-                                         │   Engine      │
-                                         └──────┬───────┘
-                                                │
-                                                ▼
-                                         ┌──────────────┐
-                                         │  Reports &   │
-                                         │ Visualization│
-                                         └──────────────┘
+```mermaid
+sequenceDiagram
+    participant YM as Яндекс.Метрика
+    participant YD as Яндекс.Директ
+    participant DC as Data Collector
+    participant DB as SQLite Database
+    participant AE as Analytics Engine
+    participant RV as Reports & Visualization
+    
+    Note over YM, RV: Процесс сбора данных
+    loop Ежедневно/еженедельно
+        YM->>DC: Запрос метрик
+        YD->>DC: Запрос статистики кампаний
+        DC->>DB: Сохранение сырых данных
+    end
+    
+    Note over YM, RV: Процесс агрегации
+    loop В конце месяца
+        DB->>AE: Агрегация помесячных данных
+        AE->>DB: Сохранение агрегированных данных
+    end
+    
+    Note over YM, RV: Процесс анализа
+    AE->>AE: Расчет KPI и трендов
+    AE->>RV: Подготовка данных для визуализации
+    
+    Note over YM, RV: Генерация отчетов
+    RV->>RV: Создание графиков и дашбордов
+    RV-->>Пользователь: Отображение результатов
 ```
 
 ---
@@ -322,8 +385,56 @@ project-analytics/
 └── 📂 scripts/                  # Вспомогательные скрипты
     ├── setup_database.py
     └── generate_docs.py
-```
 
+    
+```
+```mermaid
+graph TD
+    A[📦 project-analytics/] --> B[📄 Документация]
+    A --> C[🔧 Исходный код]
+    A --> D[🧪 Тесты]
+    A --> E[📊 Примеры]
+    A --> F[⚙️ Конфигурации]
+    
+    B --> B1[📖 README.md]
+    B --> B2[📚 docs/]
+    B2 --> B2a[🛠️ INSTALLATION.md]
+    B2 --> B2b[🔗 API.md]
+    B2 --> B2c[🏗️ ARCHITECTURE.md]
+    
+    C --> C1[💻 src/]
+    C1 --> C1a[📂 project_analytics/]
+    C1a --> C1a1[🗃️ database.py]
+    C1a --> C1a2[📈 analytics.py]
+    C1a --> C1a3[📤 export.py]
+    C1a --> C1a4[📊 visualization.py]
+    C1a --> C1a5[🔌 api.py]
+    
+    D --> D1[🧪 tests/]
+    D1 --> D1a[✅ test_database.py]
+    D1 --> D1b[✅ test_analytics.py]
+    D1 --> D1c[✅ test_export.py]
+    D1 --> D1d[✅ test_integration.py]
+    
+    E --> E1[💡 examples/]
+    E1 --> E1a[🚀 basic_usage.py]
+    E1 --> E1b[🔧 advanced_usage.py]
+    E1 --> E1c[🔗 integration_example.py]
+    E1 --> E1d[📊 dashboard_example.ipynb]
+    
+    F --> F1[⚙️ config/]
+    F1 --> F1a[🔧 settings.yaml]
+    F1 --> F1b[🔑 credentials.example]
+    F --> F2[🐳 docker-compose.yml]
+    F --> F3[🔨 pyproject.toml]
+
+    style A fill:#f0f8ff,stroke:#333,stroke-width:2px
+    style B fill:#e6f3ff,stroke:#1e88e5
+    style C fill:#f0fff0,stroke:#43a047
+    style D fill:#fffaf0,stroke:#ff9800
+    style E fill:#f5f0ff,stroke:#7e57c2
+    style F fill:#fff5f5,stroke:#e53935
+```
 ### Описание компонентов
 
 | Компонент | Описание | Файлы |
@@ -336,6 +447,37 @@ project-analytics/
 | **Tests** | Автоматические тесты | `tests/` |
 | **Examples** | Примеры использования | `examples/` |
 | **Docs** | Документация | `docs/` |
+
+```mermaid
+graph LR
+    A[🎯 Core Components] --> B[💾 Database Layer]
+    A --> C[📊 Analytics Engine]
+    A --> D[📈 Visualization]
+    A --> E[🔌 API Layer]
+    
+    B --> B1[🗃️ SQLite Manager]
+    B --> B2[🔍 Query Builder]
+    B --> B3[📝 Schema Migrations]
+    
+    C --> C1[📈 Metrics Calculator]
+    C --> C2[📉 Trend Analysis]
+    C --> C3[📊 Performance KPIs]
+    C --> C4[🔮 Forecasting]
+    
+    D --> D1[📊 Chart Generator]
+    D --> D2[📋 Report Builder]
+    D --> D3[🎯 Dashboard Creator]
+    
+    E --> E1[🌐 REST API]
+    E --> E2[📡 Webhook Handler]
+    E --> E3[🔗 Integration Adapters]
+    
+    style A fill:#e3f2fd
+    style B fill:#e8f5e8
+    style C fill:#fff3e0
+    style D fill:#fce4ec
+    style E fill:#f3e5f5
+```
 
 ---
 
@@ -377,12 +519,40 @@ pytest -v
 
 ### Структура тестов
 
-```
-tests/
-├── test_database.py      # Тесты работы с БД
-├── test_analytics.py     # Тесты аналитики
-├── test_export.py        # Тесты экспорта
-└── conftest.py          # Фикстуры pytest
+```mermaid
+graph TD
+    A[🧪 tests/] --> B[✅ Unit Tests]
+    A --> C[🔗 Integration Tests]
+    A --> D[⚡ Performance Tests]
+    A --> E[🐳 E2E Tests]
+    
+    B --> B1[🗃️ test_database.py]
+    B --> B2[📈 test_analytics.py]
+    B --> B3[📤 test_export.py]
+    B --> B4[📊 test_visualization.py]
+    
+    C --> C1[🔌 test_integrations.py]
+    C --> C2[🌐 test_api.py]
+    C --> C3[📡 test_webhooks.py]
+    
+    D --> D1[⚡ test_performance.py]
+    D --> D2[📊 test_benchmarks.py]
+    D --> D3[🔍 test_load.py]
+    
+    E --> E1[🎯 test_e2e.py]
+    E --> E2[📋 test_user_flows.py]
+    E --> E3[🖥️ test_ui.py]
+    
+    F[⚙️ test_config/] --> F1[🎛️ conftest.py]
+    F --> F2[📁 fixtures/]
+    F --> F3[📊 test_data/]
+    
+    style A fill:#fffaf0
+    style B fill:#e8f5e8
+    style C fill:#e3f2fd
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+    style F fill:#f3e5f5
 ```
 
 ### Покрытие кода
@@ -405,7 +575,39 @@ pytest --cov=src --cov-report=term-missing
 - ✅ Проверка типов (mypy)
 - ✅ Генерация документации
 
-Статус: [![CI](https://github.com/ВАШ_USERNAME/project-analytics/workflows/CI/badge.svg)](https://github.com/ВАШ_USERNAME/project-analytics/actions)
+Статус: [![CI](https://github.com/DmitryProffessor/project-analytics/workflows/CI/badge.svg)](https://github.com/DmitryProffessor/project-analytics/actions)
+## Конвейер автоматизации
+```mermaid
+graph LR
+    A[📝 Push Code] --> B[🔄 GitHub Actions]
+    B --> C[🧪 Run Tests]
+    B --> D[🔍 Code Quality]
+    B --> E[📦 Build Package]
+    B --> F[🚀 Deploy]
+    
+    C --> C1[✅ Unit Tests]
+    C --> C2[🔗 Integration Tests]
+    C --> C3[📊 Coverage Report]
+    
+    D --> D1[⚫ Black Formatting]
+    D --> D2[🧹 Flake8 Linting]
+    D --> D3[📝 MyPy Type Checking]
+    
+    E --> E1[🐍 Build Wheel]
+    E --> E2[📦 Create Package]
+    E --> E3[🏷️ Version Tagging]
+    
+    F --> F1[📚 Update Docs]
+    F --> F2[🐳 Docker Build]
+    F --> F3[☁️ Cloud Deploy]
+    
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#e8f5e8
+    style D fill:#fce4ec
+    style E fill:#f3e5f5
+    style F fill:#e1f5fe
+```
 
 ---
 
