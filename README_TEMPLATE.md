@@ -178,28 +178,9 @@ analyzer = ProjectAnalytics('path/to/your/database.db')
 
 ## 👤 Автор
 
-**Ваше Имя**
-- GitHub: [@ВАШ_USERNAME](https://github.com/ВАШ_USERNAME)
+**White_Coffee**
+- GitHub: [@DmitryProffessor](https://github.com/DmitryProffessor)
 - Email: ваш.email@example.com
-
-## 🙏 Благодарности
-
-- Команде разработчиков pandas
-- Сообществу Jupyter
-- Всем контрибьюторам проекта
-
-## 📞 Поддержка
-
-Если у вас возникли вопросы или проблемы:
-- Откройте [Issue](https://github.com/ВАШ_USERNAME/project-analytics/issues)
-- Напишите на email: ваш.email@example.com
-
-## 🔗 Полезные ссылки
-
-- [Документация](docs/)
-- [Примеры использования](examples/)
-- [Changelog](CHANGELOG.md)
-
 ---
 
 ⭐ Если проект был полезен, поставьте звезду!
