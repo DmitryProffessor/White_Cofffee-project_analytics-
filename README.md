@@ -8,7 +8,7 @@
 [![Tests](https://img.shields.io/badge/tests-pytest-blue.svg)](https://pytest.org/)
 [![GitHub Stars](https://img.shields.io/github/stars/ВАШ_USERNAME/project-analytics.svg?style=social)](https://github.com/ВАШ_USERNAME/project-analytics)
 
-**Комплексная система для анализа проектов с интеграцией Яндекс.Метрики и Яндекс.Директ**
+**Комплексная система для анализа проектов с поддержкой интеграции с Яндекс.Метрикой и Яндекс.Директ. Позволяет собирать, хранить и анализировать данные о производительности проектов, рекламных кампаниях и SEO-позициях.**
 
 [Документация](docs/) • [Примеры](examples/) • [Установка](docs/INSTALLATION.md) • [Вопросы](https://github.com/DmitryProffessor/project-analytics/issues)
 
