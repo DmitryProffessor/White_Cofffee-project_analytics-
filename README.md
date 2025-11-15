@@ -659,25 +659,6 @@ git push origin feature/amazing-feature
 - GitHub: [@ВАШ_USERNAME](https://github.com/ВАШ_USERNAME)
 - Email: ваш.email@example.com
 
----
-
-## 🙏 Благодарности
-
-- Команде разработчиков [pandas](https://pandas.pydata.org/)
-- Сообществу [Jupyter](https://jupyter.org/)
-- Всем [контрибьюторам](https://github.com/ВАШ_USERNAME/project-analytics/graphs/contributors) проекта
-
----
-
-## 📞 Поддержка
-
-- 💬 [Discussions](https://github.com/ВАШ_USERNAME/project-analytics/discussions)
-- 🐛 [Issues](https://github.com/ВАШ_USERNAME/project-analytics/issues)
-- 📧 Email: ваш.email@example.com
-
----
-
-<div align="center">
 
 **⭐ Если проект был полезен, поставьте звезду!**
 
